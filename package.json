@@ -1,0 +1,23 @@
+{
+  "name": "espm-jobs",
+  "version": "1.0.0",
+  "description": "Jobs do ES na Palma da Mão",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prodest/espm-jobs.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/prodest/espm-jobs/issues"
+  },
+  "homepage": "https://github.com/prodest/espm-jobs#readme",
+  "dependencies": {
+    "bluebird": "^3.4.1",
+    "elasticsearch": "^11.0.1",
+    "request-promise": "^3.0.0"
+  }
+}
