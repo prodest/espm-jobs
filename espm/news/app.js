@@ -1,6 +1,5 @@
 const elasticsearch = require('elasticsearch');
 const Promise = require('bluebird');
-const dbNews = require('./db.json');
 const request = require('request-promise');
 
 // ElasticSearch
