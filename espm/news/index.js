@@ -7,6 +7,7 @@ const newsIndex = 'news';
 const newsType = 'news';
 const lastUpdateIndex = 'news-last-update';
 const lastUpdateType = 'news-last-update';
+const paralelBlocks = 5;
 
 // Orchard
 const orchardApi = process.env.ORCHARD_API || 'http://orchard.dchm.es.gov.br/api/';
@@ -122,7 +123,6 @@ function bulkIndexNews(site, lastUpdate) {
                 }
             }
 
-            console.log(`Updated all news from ${site}.`);
             return Promise.resolve(`Updated all news from ${site}.`);
         });
 }
@@ -150,18 +150,25 @@ client.indices.exists({
         return getOrchardSites();
     })
     .then(sites => {
-        const promises = []
+        let promises = []
         sites.forEach(site => {
             promises.push(getAndIndexNews(site.sigla));
         });
 
-        return Promise.all(promises);
+        const groupedPromises = [];
+        for (let i = 0; promises.length; i += paralelBlocks) {
+            groupedPromises.push(promises.splice(0, paralelBlocks));
+        }
 
-        // Promise.reduce(promises, (a, b) => {
-        //     return b.then(a => console.log(a));
-        // });
+        return Promise.reduce(groupedPromises, (total, p) => {
+            return Promise.all(p)
+                .then(a => {
+                    return total.concat(a);
+                });
+        }, []);
     })
     .then(a => {
+        console.log(a);
         console.log('Fim.');
         process.exit(0);
     })
