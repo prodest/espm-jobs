@@ -16,7 +16,7 @@ const newsEndpoint = `${orchardApi}noticias/GetNoticiasBySite`;
 const maxNews = 50; // Should reflect maximum number of news orchard's API responds
 
 const client = new elasticsearch.Client({
-    host: 'http://10.243.9.4',
+    host: process.env.ELASTICSEARCH || 'http://10.243.9.4',
     log: 'error'
 });
 
