@@ -10,7 +10,7 @@ const lastUpdateType = 'news-last-update';
 const paralelBlocks = 5;
 
 // Orchard
-const orchardApi = process.env.ORCHARD_API || 'http://orchard.dchm.es.gov.br/api/';
+const orchardApi = process.env.ORCHARD_API || 'http://orchard.dcpr.es.gov.br/api/';
 const sitesEndpoint = `${orchardApi}noticias/getsitelist`;
 const newsEndpoint = `${orchardApi}noticias/GetNoticiasBySite`;
 const maxNews = 50; // Should reflect maximum number of news orchard's API responds
@@ -32,6 +32,11 @@ function getOrchardSites() {
     return request( options );
 }
 
+/**
+ * Gets last time the news for a site was updated
+ * @param {any} site Site acronym
+ * @returns {Promise} Promise with last update Date
+ */
 function getLastUpdate( site ) {
 
     return client.indices.exists( { index: lastUpdateIndex } )
@@ -59,6 +64,13 @@ function getLastUpdate( site ) {
     } );
 }
 
+
+/**
+ * Get news for a site
+ * @param {any} site Site acronym
+ * @param {any} lastUpdate Last time the news was updated
+ * @returns {Promise} Promise with list of news
+ */
 function getOrchardNews( site, lastUpdate ) {
     const options = {
         uri: newsEndpoint,
