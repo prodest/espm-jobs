@@ -19,5 +19,9 @@
     "bluebird": "^3.4.1",
     "elasticsearch": "^11.0.1",
     "request-promise": "^3.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^2.13.1",
+    "eslint-config-prodest": "git+https://github.com/prodest/eslint-config-prodest.git"
   }
 }
