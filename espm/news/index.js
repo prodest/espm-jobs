@@ -10,7 +10,7 @@ const lastUpdateType = 'news-last-update';
 const paralelBlocks = 5;
 
 // Orchard
-const orchardApi = process.env.ORCHARD_API || 'http://orchard.dcpr.es.gov.br/api/';
+const orchardApi = process.env.ORCHARD_API || 'http://gtsis2.es.gov.br/api/';
 const sitesEndpoint = `${orchardApi}noticias/getsitelist`;
 const newsEndpoint = `${orchardApi}noticias/GetNoticiasBySite`;
 const maxNews = 50; // Should reflect maximum number of news orchard's API responds
@@ -20,6 +20,10 @@ const client = new elasticsearch.Client( {
     log: 'error'
 } );
 
+/**
+ * Gets the list of sites available at Orchard
+ * @returns {Promise} Http Response
+ */
 function getOrchardSites() {
     const options = {
         uri: sitesEndpoint,
@@ -34,7 +38,7 @@ function getOrchardSites() {
 
 /**
  * Gets last time the news for a site was updated
- * @param {any} site Site acronym
+ * @param {string} site Site acronym
  * @returns {Promise} Promise with last update Date
  */
 function getLastUpdate( site ) {
@@ -67,9 +71,9 @@ function getLastUpdate( site ) {
 
 /**
  * Get news for a site
- * @param {any} site Site acronym
- * @param {any} lastUpdate Last time the news was updated
- * @returns {Promise} Promise with list of news
+ * @param {string} site Site acronym
+ * @param {Date} lastUpdate Last time the news was updated
+ * @returns {Promise} List of news
  */
 function getOrchardNews( site, lastUpdate ) {
     const options = {
@@ -87,6 +91,12 @@ function getOrchardNews( site, lastUpdate ) {
     return request( options );
 }
 
+/**
+ * Gets then news from orchard and index with ElasticSearch
+ * @param {string} site Site acronym
+ * @param {Date} lastUpdate Last time the news was updated
+ * @returns {Promise} Bulk response from ElasticSearch or null if nothing was updated
+ */
 function bulkIndexNews( site, lastUpdate ) {
     return getOrchardNews( site, lastUpdate )
     .then( news => {
@@ -132,10 +142,16 @@ function bulkIndexNews( site, lastUpdate ) {
             }
         }
 
+        console.log( `Updated all news from ${site}.` );
         return Promise.resolve( `Updated all news from ${site}.` );
     } );
 }
 
+/**
+ * Gets last update for a site and index the news with ElasticSearch
+ * @param {string} site Site Acronym
+ * @returns {Promise} Success message
+ */
 function getAndIndexNews( site ) {
     return getLastUpdate( site )
     .then( lastUpdate => {
@@ -176,8 +192,8 @@ client.indices.exists( {
             } );
     }, [] );
 } )
-.then( a => {
-    console.log( a );
+.then( () => {
+    //console.log( a );
     console.log( 'Fim.' );
     process.exit( 0 );
 } )
