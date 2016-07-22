@@ -1,0 +1,67 @@
+{
+  "type": "index_hadoop",
+  "spec": {
+    "dataSchema": {
+      "dataSource": "Receita",
+      "parser": {
+        "type": "hadoopyString",
+        "parseSpec": {
+          "format": "json",
+          "timestampSpec": {
+            "column": "dataReceita",
+            "format": "auto"
+          },
+          "dimensionsSpec": {
+            "dimensions": [
+              "UnidadeGestora",
+              "CategoriaEconomica",
+              "Origem",
+              "Especie",
+              "Rubrica",
+              "Alinea",
+              "Subalinea",
+              "Ano",
+              "MesDescritivo"
+            ],
+            "dimensionExclusions": [],
+            "spatialDimensions": []
+          }
+        }
+      },
+      "metricsSpec": [
+        {
+          "type": "doubleSum",
+          "name": "vlRealizado",
+          "fieldName": "vlRealizado"
+        },
+        {
+          "type": "doubleSum",
+          "name": "vlPrevisto",
+          "fieldName": "vlPrevisto"
+        }
+      ],
+      "granularitySpec": {
+        "type": "uniform",
+        "segmentGranularity": "DAY",
+        "queryGranularity": "NONE",
+        "intervals": [
+          "2009-01-01/2016-05-24"
+        ]
+      }
+    },
+    "ioConfig": {
+      "type": "hadoop",
+      "inputSpec": {
+        "type": "static",
+        "paths": "hdfs://hadoop:8020/user/hadoop/prodest/stagedata/seconti/receita",
+        "filePattern": "\\part-\\"
+      }
+    },
+    "tuningConfig": {
+      "type": "hadoop"
+    }
+  },
+  "hadoopDependencyCoordinates": [
+    "org.apache.hadoop:hadoop-client:2.7.1"
+  ]
+}

@@ -57,7 +57,7 @@ function getLastUpdate(site) {
             return Promise.resolve(new Date(lastUpdate._source.date));
         })
         .catch(err => {
-            return Promise.resolve(new Date(1900, 01, 01));
+            return Promise.resolve(new Date(1900, 1, 1));
         });
 }
 
