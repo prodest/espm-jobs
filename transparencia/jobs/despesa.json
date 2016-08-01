@@ -1,0 +1,66 @@
+{
+  "type": "index_hadoop",
+  "spec": {
+    "dataSchema": {
+      "dataSource": "Despesa",
+      "parser": {
+        "type": "hadoopyString",
+        "parseSpec": {
+          "format": "json",
+          "timestampSpec": {
+            "column": "dataDespesa",
+            "format": "auto"
+          },
+          "dimensionsSpec": {
+            "dimensionExclusions": [],
+            "spatialDimensions": []
+          }
+        }
+      },
+      "metricsSpec": [
+        {
+          "type": "doubleSum",
+          "name": "valorPago",
+          "fieldName": "valorPago"
+        },
+        {
+          "type": "doubleSum",
+          "name": "valorLiquidado",
+          "fieldName": "valorLiquidado"
+        },
+        {
+          "type": "doubleSum",
+          "name": "valorEmpenho",
+          "fieldName": "valorEmpenho"
+        },
+        {
+          "type": "doubleSum",
+          "name": "valorRap",
+          "fieldName": "valorRap"
+        }
+      ],
+      "granularitySpec": {
+        "type": "uniform",
+        "segmentGranularity": "DAY",
+        "queryGranularity": "NONE",
+        "intervals": [
+          "2009-01-01/2016-06-15"
+        ]
+      }
+    },
+    "ioConfig": {
+      "type": "hadoop",
+      "inputSpec": {
+        "type": "static",
+        "paths": "hdfs://hadoop:8020/user/hadoop/prodest/stagedata/seconti/despesa",
+        "filePattern": "\\part-\\"
+      }
+    },
+    "tuningConfig": {
+      "type": "hadoop"
+    }
+  },
+  "hadoopDependencyCoordinates": [
+    "org.apache.hadoop:hadoop-client:2.7.1"
+  ]
+}
