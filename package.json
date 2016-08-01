@@ -21,7 +21,7 @@
     "request-promise": "^3.0.0"
   },
   "devDependencies": {
-    "eslint-config-prodest": "^1.0.12"
-    "eslint-plugin-promise": "^1.3.2",
+    "eslint-config-prodest": "^1.0.12",
+    "eslint-plugin-promise": "^1.3.2"
   }
 }
