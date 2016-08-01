@@ -7,9 +7,9 @@
     const receita = require( './jobs/receita.json' );
     const despesa = require( './jobs/despesa.json' );
     const rp = require( 'request-promise' );
-    const job = process.arg[ 1 ] ? process.arg[ 1 ] : 'receita';
-    const HOST = process.arg[ 2 ] ? process.arg[ 2 ] : 'http://overlord.labs.prodest.dcpr.es.gov.br';
-    const year = process.arg[ 3 ] ? process.arg[ 3 ] : 2009;
+    const job = process.argv[ 2 ] || 'receita';
+    const HOST = process.argv[ 3 ] || 'http://overlord.labs.prodest.dcpr.es.gov.br/druid/indexer/v1/task';
+    const year = process.argv[ 4 ] || 2009;
 
   /**
    * tratando o body para aplicar a data
@@ -18,7 +18,7 @@
     let bodyJson = job === 'receita' ? receita : despesa;
     let dateIni = new Date( Date.UTC( parseInt( year ), 0 ) );
     let dateEnd = new Date();
-    bodyJson.dataSchema.granularitySpec.intervals = [ `${dateIni.toISOString().substring( 0, 10 )}/${dateEnd.toISOString().substring( 0, 10 )}` ];
+    bodyJson.spec.dataSchema.granularitySpec.intervals = [ `${dateIni.toISOString().substring( 0, 10 )}/${dateEnd.toISOString().substring( 0, 10 )}` ];
 
     let options = {
         method: 'POST',
