@@ -30,7 +30,7 @@
     rp( options )
     .then( function( data ) {
         console.info( data );
-        process.exit( 1 );
+        process.exit( 0 );
     } )
     .catch( ( err ) => {
         console.error( err.message || err );
