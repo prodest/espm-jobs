@@ -57,9 +57,33 @@
         "filePattern": "\\part-\\"
       }
     },
-    "tuningConfig": {
-      "type": "hadoop"
-    }
+    "tuningConfig":{
+        "type":"hadoop",
+        "workingPath":null,
+        "partitionsSpec":{
+          "type":"hashed",
+          "targetPartitionSize":-1,
+          "maxPartitionSize":-1,
+          "assumeGrouped":false,
+          "numShards":-1
+        },
+        "shardSpecs":{},
+        "indexSpec":{
+          "bitmap":{"type":"concise"},
+          "dimensionCompression":null,
+          "metricCompression":null
+        },
+        "maxRowsInMemory":80000,
+        "leaveIntermediate":false,
+        "cleanupOnFailure":true,
+        "overwriteFiles":true,
+        "ignoreInvalidRows":false,
+        "jobProperties":{},
+        "combineText":false,
+        "useCombiner":false,
+        "buildV9Directly":false,
+        "numBackgroundPersistThreads":0
+      }
   },
   "hadoopDependencyCoordinates": [
     "org.apache.hadoop:hadoop-client:2.7.1"
