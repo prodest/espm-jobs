@@ -38,7 +38,7 @@ function getAndIndexNews( site ) {
         } );
 }
 
-let _highlights;
+let _highlights = '';
 elastic().createIndexesIfNotExists()
 .then( () => orchard().getHighlights() )
 .then( ( highlights ) => {
@@ -64,6 +64,7 @@ elastic().createIndexesIfNotExists()
     }, [] );
 } )
 .then( () => elastic().indexHighlights( _highlights ) )
+.then( ( highlightsTempIndexName ) => elastic().setHighlightsAlias( highlightsTempIndexName ) )
 .then( () => {
     console.log( 'Fim.' );
     process.exit( 0 );
