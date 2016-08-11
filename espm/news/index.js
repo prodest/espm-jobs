@@ -64,12 +64,9 @@ elastic().createIndexesIfNotExists()
     }, [] );
 } )
 .then( () => elastic().indexHighlights( _highlights ) )
-.then( ( highlightsTempIndexName ) => {
-    elastic().setHighlightsAlias( highlightsTempIndexName );
-    console.log( 'Updated highlights.' );
-    return 'Updated highlights.';
-} )
+.then( ( highlightsTempIndexName ) => elastic().setHighlightsAlias( highlightsTempIndexName ) )
 .then( () => {
+    console.log( 'Updated highlights.' );
     console.log( 'Fim.' );
     process.exit( 0 );
 } )
