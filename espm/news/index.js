@@ -38,12 +38,11 @@ function getAndIndexNews( site ) {
         } );
 }
 
-let _highlightsTempIndexName = '';
+let _highlights;
 elastic().createIndexesIfNotExists()
 .then( () => orchard().getHighlights() )
-.then( ( highlights ) => elastic().indexHighlights( highlights ) )
-.then( ( highlightsIndexName ) => {
-    _highlightsTempIndexName = highlightsIndexName;
+.then( ( highlights ) => {
+    _highlights = highlights;
     return orchard().getSites();
 } )
 .then( sites => {
@@ -64,16 +63,12 @@ elastic().createIndexesIfNotExists()
             } );
     }, [] );
 } )
-.then( () => elastic().setHighlightsAlias( _highlightsTempIndexName ) )
+.then( () => elastic().indexHighlights( _highlights ) )
 .then( () => {
     console.log( 'Fim.' );
     process.exit( 0 );
 } )
 .catch( err => {
-    if ( _highlightsTempIndexName ) {
-        elastic().removeIndex( _highlightsTempIndexName );
-    }
-
     console.log( err );
     process.exit( -1 );
 } );
