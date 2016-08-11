@@ -124,10 +124,13 @@ module.exports = () => {
 
 
     elastic.indexHighlights = function( highlights ) {
+        const tempIndexName = 'highlights_'
+                + new Date().toISOString().slice( 0, 19 ).toLowerCase();
+
         const actions = highlights.map( n => {
             return {
                 index: {
-                    _index: highlightsIndex,
+                    _index: tempIndexName,
                     _type: highlightsType,
                     _id: `${n.siglaSite}_${n.noticiaId}`
                 }
@@ -162,6 +165,11 @@ module.exports = () => {
                 date: lastUpdate
             }
         } );
+    };
+
+    elastic.setHighlightsAlias = function( indexName ) {
+        return elastic.removeIndex( highlightsIndex )
+        .then( () => setAlias( indexName, highlightsIndex ) );
     };
 
     elastic.removeIndex = function( indexName ) {
