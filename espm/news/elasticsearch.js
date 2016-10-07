@@ -112,13 +112,16 @@ module.exports = () => {
         }
 
         const lastNews = news[ news.length - 1 ];
-        const lastUpdate = new Date( lastNews.dataModificacao );
+        const lastUpdated = {
+            date: new Date( lastNews.dataIndexacao ),
+            id: lastNews.noticiaId
+        };
 
         return client.bulk( {
             body: body
         } )
         .then( () => {
-            return lastUpdate;
+            return lastUpdated;
         } );
     };
 
@@ -177,7 +180,7 @@ module.exports = () => {
     };
 
     elastic.removeIndex = function( indexName ) {
-        return client.indices[ 'delete' ]( {
+        return client.indices.delete( {
             index: indexName
         } );
     };

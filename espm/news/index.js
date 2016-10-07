@@ -2,7 +2,22 @@ const Promise = require( 'bluebird' );
 const elastic = require( './elasticsearch' );
 const orchard = require( './orchard' );
 
-const _parallelBlocks = process.env.PARALLEL_BLOCKS || 5;
+const _parallelBlocks = process.env.PARALLEL_BLOCKS || 1;
+
+/**
+ * 
+ * 
+ * @param {any} site
+ * @param {any} lastUpdate
+ * @returns
+ */
+function getLastUpdate( site, lastUpdate ) {
+    if ( lastUpdate ) {
+        return Promise.resolve( lastUpdate );
+    } else {
+        return elastic().getLastUpdate( site );
+    }
+}
 
 /**
  *
@@ -10,8 +25,8 @@ const _parallelBlocks = process.env.PARALLEL_BLOCKS || 5;
  * @param {string} site Sigla do site
  * @returns {Promise}
  */
-function getAndIndexNews( site ) {
-    return elastic().getLastUpdate( site )
+function getAndIndexNews( site, lastId, lastUpdate ) {
+    return getLastUpdate( site, lastUpdate )
         .then( lastUpdate => {
             return orchard().getNews( site, lastUpdate );
         } )
@@ -19,15 +34,25 @@ function getAndIndexNews( site ) {
             if ( news.length > 0 ) {
                 return elastic().indexNews( news );
             } else {
-                return Promise.reject( );
+                return Promise.reject();
             }
         } )
-        .then( lastUpdate => {
-            return elastic().updateLastUpdate( site, lastUpdate );
+        .then( lastUpdatedNews => {
+            elastic().updateLastUpdate( site, lastUpdatedNews.date );
+
+            if ( lastId !== lastUpdatedNews.id ) {
+                return getAndIndexNews( site, lastUpdatedNews.id, lastUpdatedNews.date );
+            } else {
+                return Promise.reject();
+            }
         } )
-        .then( () => {
-            return getAndIndexNews( site );
-        } )
+        // .then( ( lastUpdatedNews ) => {
+        //     if ( lastId !== lastUpdatedNews.id ) {
+        //         return getAndIndexNews( site, lastUpdatedNews.id, lastUpdatedNews.date );
+        //     } else {
+        //         return Promise.reject();
+        //     }
+        // } )
         .catch( err => {
             if ( !err ) {
                 console.log( `Updated all news from ${site}.` );
@@ -48,7 +73,9 @@ elastic().createIndexesIfNotExists()
 .then( sites => {
     let promises = [];
     sites.forEach( site => {
-        promises.push( getAndIndexNews( site.sigla ) );
+        if ( site.sigla === site.siglaPublica ) {
+            promises.push( getAndIndexNews( site.sigla ) );
+        }
     } );
 
     const groupedPromises = [];
