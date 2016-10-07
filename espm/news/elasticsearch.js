@@ -124,6 +124,10 @@ module.exports = () => {
 
 
     elastic.indexHighlights = function( highlights ) {
+        if ( highlights.length == 0 ) {
+            return Promise.reject( 'No highlights found.' );
+        }
+
         const tempIndexName = 'highlights_'
                 + new Date().toISOString().slice( 0, 19 ).toLowerCase();
 

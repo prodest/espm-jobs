@@ -2,7 +2,7 @@ const Promise = require( 'bluebird' );
 const elastic = require( './elasticsearch' );
 const orchard = require( './orchard' );
 
-const _paralelBlocks = 5;
+const _parallelBlocks = process.env.PARALLEL_BLOCKS || 5;
 
 /**
  *
@@ -52,8 +52,8 @@ elastic().createIndexesIfNotExists()
     } );
 
     const groupedPromises = [];
-    for ( let i = 0; promises.length; i += _paralelBlocks ) {
-        groupedPromises.push( promises.splice( 0, _paralelBlocks ) );
+    for ( let i = 0; promises.length; i += _parallelBlocks ) {
+        groupedPromises.push( promises.splice( 0, _parallelBlocks ) );
     }
 
     return Promise.reduce( groupedPromises, ( total, p ) => {
