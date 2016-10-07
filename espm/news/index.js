@@ -28,7 +28,7 @@ function getLastUpdate( site, lastUpdate ) {
  */
 function getPublicAcronym( sites, acronym ) {
     sites.filter( s => s.sigla === acronym );
-    return sites[ 0 ];
+    return sites[ 0 ].siglaPublica;
 }
 
 /**
