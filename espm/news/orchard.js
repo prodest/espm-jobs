@@ -1,6 +1,6 @@
 const request = require( 'request-promise' );
 
-const orchardApi = process.env.ORCHARD_API || 'http://gtsis2.es.gov.br/api/';
+const orchardApi = process.env.ORCHARD_API || 'http://orchard.dcpr.es.gov.br/api/';
 const sitesEndpoint = `${orchardApi}noticias/GetSiteList`;
 const newsEndpoint = `${orchardApi}noticias/GetNoticiasBySite`;
 const highlightsEndpoint = `${orchardApi}noticias/GetDestaques`;
